@@ -181,7 +181,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Banner de felicitación (similar al logo)
         const bannerHTML = `
             <div style="margin: 20px 0; text-align: center;">
-                <img src="https://raw.githubusercontent.com/centricasolucionesdiseno-ux/Generador-de-Correos-de-Cumpleannos/main/img/banner/tarjeta_cumple.png" alt="Banner de Cumpleaños" style="max-width: 100%; height: auto;">
+                <img src="https://raw.githubusercontent.com/centricasolucionesdiseno-ux/Generador-de-Correos-de-Cumpleannos/img/banner/tarjeta_Cumple.png" alt="Banner de Cumpleaños" style="max-width: 100%; height: auto;">
             </div>
         `;
         
