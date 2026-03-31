@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <p style="font-size: 14px; line-height: 1.5;">Hola equipo,</p>
                 
                 <p style="font-size: 14px; line-height: 1.5;">
-                    En Centrica, no solo celebramos el cumplimiento de nuestras metas y el éxito de nuestros proyectos, sino también la vida de las personas que hacen esto posible.
+                    En <strong>Centrica</strong>, no solo celebramos el cumplimiento de nuestras metas y el éxito de nuestros proyectos, sino también la vida de las personas que hacen esto posible.
                 </p>
                 
                 <p style="font-size: 14px; line-height: 1.5;">
@@ -201,6 +201,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 ${tablaHTML}
                 
                 ${bannerHTML}
+
+                <p style="font-size: 14px; line-height: 1.5;">
+                    Los invitamos a todos a dejarles un mensaje de felicitación o pasar por su puesto (o escribirles por chat) para celebrar juntos.
+                </p>
                 
                 <p style="font-size: 12px; color: #666; margin-top: 20px;">
                     Por favor cuide el medioambiente y no imprima este correo electrónico a no ser que sea necesario.
