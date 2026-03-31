@@ -55,19 +55,36 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Función para formatear fecha
+    // Función para formatear fecha a dd/mm
     function formatearFecha(fecha) {
-        if (!fecha) return 'No especificada';
+        if (!fecha) return '--/--';
         
         if (fecha instanceof Date) {
-            return `${fecha.getDate()}/${fecha.getMonth() + 1}`;
+            const dia = fecha.getDate().toString().padStart(2, '0');
+            const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+            return `${dia}/${mes}`;
         }
         
         if (typeof fecha === 'string') {
             // Intentar extraer día y mes
             const partes = fecha.split(/[/-]/);
             if (partes.length >= 2) {
-                return `${partes[0]}/${partes[1]}`;
+                // Si el formato es DD/MM/YYYY
+                if (partes[0].length === 2 && partes[1].length === 2) {
+                    return `${partes[0]}/${partes[1]}`;
+                }
+                // Si el formato es YYYY-MM-DD
+                if (partes[0].length === 4) {
+                    return `${partes[2]}/${partes[1]}`;
+                }
+            }
+            
+            // Intentar parsear fecha
+            const fechaParseada = new Date(fecha);
+            if (!isNaN(fechaParseada.getTime())) {
+                const dia = fechaParseada.getDate().toString().padStart(2, '0');
+                const mes = (fechaParseada.getMonth() + 1).toString().padStart(2, '0');
+                return `${dia}/${mes}`;
             }
         }
         
@@ -77,37 +94,37 @@ document.addEventListener('DOMContentLoaded', function() {
     // Función para generar el correo
     function generarCorreo(mes) {
         const empleados = empleadosPorMes[mes] || [];
+        const nombreMes = nombresMeses[mes];
         
         if (empleados.length === 0) {
             correoContainer.innerHTML = `
                 <div style="padding: 40px; text-align: center; background: #f8f9fa; border-radius: 12px;">
                     <h3 style="color: #dc3545;">🎂 Sin cumpleañeros</h3>
-                    <p style="color: #666; margin-top: 10px;">No hay empleados que cumplan años en ${nombresMeses[mes]}.</p>
+                    <p style="color: #666; margin-top: 10px;">No hay empleados que cumplan años en ${nombreMes}.</p>
                     <p style="color: #666;">Por favor, selecciona otro mes o carga la base de datos de cumpleaños.</p>
                 </div>
             `;
             return;
         }
         
-        // Generar tabla HTML de empleados
+        // Generar tabla HTML de empleados (sin columna #)
         let tablaHTML = `
-            <table style="width: 100%; border-collapse: collapse; margin: 20px 0; background: white; border-radius: 8px; overflow: hidden;">
+            <table border="0" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif;">
                 <thead>
-                    <tr style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-                        <th style="padding: 12px; text-align: left; border: 1px solid #e0e0e0;">#</th>
-                        <th style="padding: 12px; text-align: left; border: 1px solid #e0e0e0;">Nombre del Empleado</th>
-                        <th style="padding: 12px; text-align: left; border: 1px solid #e0e0e0;">Fecha de Cumpleaños</th>
+                    <tr style="background-color: #0E58A9;">
+                        <th style="border: 1px solid #ddd; padding: 10px; text-align: left; color: white;">Nombre del Empleado</th>
+                        <th style="border: 1px solid #ddd; padding: 10px; text-align: left; color: white;">Fecha de Cumpleaños</th>
                     </tr>
                 </thead>
                 <tbody>
         `;
         
-        empleados.forEach((emp, index) => {
+        empleados.forEach((emp) => {
+            const fechaFormateada = formatearFecha(emp.fecha);
             tablaHTML += `
-                <tr style="border-bottom: 1px solid #e0e0e0;">
-                    <td style="padding: 10px 12px; border: 1px solid #e0e0e0;">${index + 1}</td>
-                    <td style="padding: 10px 12px; border: 1px solid #e0e0e0;"><strong>${emp.nombre}</strong></td>
-                    <td style="padding: 10px 12px; border: 1px solid #e0e0e0;">🎈 ${formatearFecha(emp.fecha)}</td>
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 8px 10px;">${emp.nombre}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px 10px;">${fechaFormateada}</td>
                 </tr>
             `;
         });
@@ -117,53 +134,37 @@ document.addEventListener('DOMContentLoaded', function() {
             </table>
         `;
         
-        // Imagen de felicitación (usando emojis y estilo)
-        const imagenHTML = `
-            <div style="text-align: center; margin: 30px 0; padding: 20px; background: linear-gradient(135deg, #ffe6f0 0%, #ffd9e6 100%); border-radius: 12px;">
-                <div style="font-size: 48px;">🎂🎉🎈</div>
-                <h3 style="color: #f5576c; margin-top: 10px;">¡Feliz Cumpleaños!</h3>
-                <p style="color: #666;">Que tengan un día maravilloso lleno de alegría y celebraciones</p>
+        // Banner de felicitación (similar al logo)
+        const bannerHTML = `
+            <div style="margin: 20px 0; text-align: center;">
+                <img src="https://raw.githubusercontent.com/centricasolucionesdiseno-ux/Firma-CentricaSoluciones/main/img/banner/banner_actual.png" alt="Banner de Cumpleaños" style="max-width: 100%; height: auto;">
             </div>
         `;
         
-        // Cuerpo completo del correo
+        // Cuerpo completo del correo (limpio para copiar)
         const cuerpoCorreo = `
-            <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 800px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                <div style="padding: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-align: center;">
-                    <h1 style="margin: 0; font-size: 24px;">🎂 Feliz Cumpleaños 🎂</h1>
-                </div>
+            <div style="font-family: Arial, Helvetica, sans-serif; max-width: 800px; margin: 0 auto;">
+                <p style="font-size: 14px; line-height: 1.5;">Hola equipo,</p>
                 
-                <div style="padding: 30px;">
-                    <h2 style="color: #333; margin-top: 0;">Hola a todos,</h2>
-                    
-                    <p style="font-size: 16px; line-height: 1.6; color: #555;">
-                        Queremos celebrar a los cumpleañeros de <strong style="color: #f5576c; font-size: 18px;">${nombresMeses[mes]}</strong>:
-                    </p>
-                    
-                    ${tablaHTML}
-                    
-                    ${imagenHTML}
-                    
-                    <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #f5576c;">
-                        <p style="margin: 0; color: #666; font-style: italic;">
-                            🎈 ¡Acompáñanos a felicitarlos y hacerles sentir especiales en su día! 🎈
-                        </p>
-                    </div>
-                    
-                    <hr style="margin: 30px 0; border: none; border-top: 1px solid #e0e0e0;">
-                    
-                    <div style="text-align: center; margin-top: 20px;">
-                        <img src="https://raw.githubusercontent.com/centricasolucionesdiseno-ux/Firma-CentricaSoluciones/main/img/logo.png" alt="Centrica Soluciones" style="max-width: 150px;">
-                        <p style="color: #999; font-size: 12px; margin-top: 10px;">
-                            Este es un mensaje automático generado por el sistema de cumpleaños.<br>
-                            Por favor cuide el medioambiente y no imprima este correo electrónico a no ser que sea necesario.
-                        </p>
-                    </div>
-                </div>
+                <p style="font-size: 14px; line-height: 1.5;">
+                    En Centrica, no solo celebramos el cumplimiento de nuestras metas y el éxito de nuestros proyectos, sino también la vida de las personas que hacen esto posible.
+                </p>
+                
+                <p style="font-size: 14px; line-height: 1.5;">
+                    Queremos compartir con ustedes la lista de los compañeros que estarán celebrando un año más de vida durante este mes de <strong>${nombreMes}</strong>:
+                </p>
+                
+                ${tablaHTML}
+                
+                ${bannerHTML}
+                
+                <p style="font-size: 12px; color: #666; margin-top: 20px;">
+                    Por favor cuide el medioambiente y no imprima este correo electrónico a no ser que sea necesario.
+                </p>
             </div>
         `;
         
-        // Mostrar en el contenedor
+        // Mostrar en el contenedor (sin contenedor extra)
         correoContainer.innerHTML = cuerpoCorreo;
         
         // Mostrar el wrapper
@@ -174,10 +175,10 @@ document.addEventListener('DOMContentLoaded', function() {
             resultadoWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 100);
         
-        mostrarMensaje(`✅ Correo generado para ${nombresMeses[mes]} con ${empleados.length} cumpleañero${empleados.length !== 1 ? 's' : ''}`, 'exito');
+        mostrarMensaje(`✅ Correo generado para ${nombreMes} con ${empleados.length} cumpleañero${empleados.length !== 1 ? 's' : ''}`, 'exito');
     }
 
-    // Función para copiar al portapapeles
+    // Función para copiar al portapapeles (copia el HTML limpio)
     function copiarCorreo() {
         if (!correoContainer || !correoContainer.innerHTML) {
             mostrarMensaje('❌ No hay correo para copiar', 'error');
@@ -185,9 +186,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         try {
-            // Crear un elemento temporal para copiar el HTML
+            // Obtener el HTML del correo
+            const correoHTML = correoContainer.innerHTML;
+            
+            // Crear un elemento temporal para copiar
             const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = correoContainer.innerHTML;
+            tempDiv.innerHTML = correoHTML;
             
             // Seleccionar el contenido
             const range = document.createRange();
@@ -209,10 +213,11 @@ document.addEventListener('DOMContentLoaded', function() {
             if (success) {
                 mostrarMensaje('✅ Correo copiado al portapapeles', 'exito');
                 if (copyBtn) {
+                    const originalText = copyBtn.textContent;
                     copyBtn.textContent = '¡Copiado!';
                     copyBtn.classList.add('copied');
                     setTimeout(() => {
-                        copyBtn.textContent = 'Copiar Correo';
+                        copyBtn.textContent = originalText;
                         copyBtn.classList.remove('copied');
                     }, 3000);
                 }
