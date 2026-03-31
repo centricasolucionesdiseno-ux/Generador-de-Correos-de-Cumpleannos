@@ -4,42 +4,57 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <title>Generador de Correos de Cumpleaños - Cargar Base de datos</title>
+    <title>Generador de Correos de Cumpleaños</title>
 </head>
 <body>
 <div class="container">
     <div class="noselect">
         <a href="index.html" class="back-button">&larr; Volver a la selección</a>
-        <h2>Cargar Base de datos de Cumpleaños</h2>
-        <p>1. Selecciona un archivo Excel con el formato (Nombre del Empleado | Fecha de Cumpleaños).</p>
-        <p>2. Haz clic en "Dividir por Meses" para organizar los empleados según su mes de cumpleaños.</p>
-        <p>3. Los datos se guardarán automáticamente para usarlos en el generador de correos.</p>
+        <h2>Generar Correo de Cumpleaños</h2>
+        <p>1. Selecciona un mes para ver los cumpleañeros.</p>
+        <p>2. El correo se generará automáticamente con la lista de empleados.</p>
+        <p>3. Usa el botón "Copiar Correo" para copiar el contenido al portapapeles.</p>
 
         <div class="form-container">
             <div class="form-top-row">
                 <div class="form-group full-width">
-                    <label for="excelFile">Archivo Excel *</label>
-                    <input type="file" id="excelFile" accept=".xlsx, .xls, .csv">
-                    <small style="color: #666; display: block; margin-top: 5px;">Formato requerido: Columnas "Nombre del Empleado" y "Fecha de Cumpleaños"</small>
+                    <label for="mesSelect">Selecciona el Mes *</label>
+                    <select id="mesSelect" required>
+                        <option value="" disabled selected>-- Elige un mes --</option>
+                        <option value="0">Enero</option>
+                        <option value="1">Febrero</option>
+                        <option value="2">Marzo</option>
+                        <option value="3">Abril</option>
+                        <option value="4">Mayo</option>
+                        <option value="5">Junio</option>
+                        <option value="6">Julio</option>
+                        <option value="7">Agosto</option>
+                        <option value="8">Septiembre</option>
+                        <option value="9">Octubre</option>
+                        <option value="10">Noviembre</option>
+                        <option value="11">Diciembre</option>
+                    </select>
                 </div>
             </div>
             <div class="generate-button-container">
-                <button id="generar-btn">Dividir por Meses</button>
+                <button id="generar-btn">Generar Correo</button>
                 <span id="generado"></span>
             </div>
         </div>
     </div>
 
-    <!-- Contenedor para mostrar las tablas por mes -->
-    <div id="tablas-meses-wrapper" style="display: none;">
+    <!-- Contenedor para mostrar el correo generado -->
+    <div id="resultado-wrapper" style="display: none;">
         <div class="copy-button-wrapper">
-            <button id="limpiar-btn" class="action-button" style="background-color: #dc3545;">Limpiar Datos</button>
+            <button id="copy-btn" class="action-button">Copiar Correo</button>
         </div>
-        <div id="tablas-container"></div>
+
+        <div id="correo-container">
+            <!-- Aquí se mostrará el correo generado -->
+        </div>
     </div>
 </div>
 
-<script src="cargar-bd.js"></script>
+<script src="generar-correo.js"></script>
 </body>
 </html>
