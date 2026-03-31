@@ -33,6 +33,50 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Función para seleccionar texto
+    function selectText(element) {
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        const range = document.createRange();
+        range.selectNodeContents(element);
+        selection.addRange(range);
+    }
+
+    // Función para copiar el correo
+    function copyEmail(buttonElement) {
+        let success = false;
+        try {
+            if (navigator.clipboard && navigator.clipboard.write) {
+                const emailHTML = correoContainer.innerHTML;
+                const blob = new Blob([emailHTML], { type: 'text/html' });
+                const clipboardItem = new ClipboardItem({ 'text/html': blob });
+
+                navigator.clipboard.write([clipboardItem]).then(() => {
+                    buttonElement.textContent = '¡Copiado!';
+                    buttonElement.classList.add('copied');
+                    success = true;
+                }).catch(() => {
+                    selectText(correoContainer);
+                    success = document.execCommand('copy');
+                    if (success) {
+                        buttonElement.textContent = '¡Copiado!';
+                        buttonElement.classList.add('copied');
+                    }
+                });
+            } else {
+                selectText(correoContainer);
+                success = document.execCommand('copy');
+                if (success) {
+                    buttonElement.textContent = '¡Copiado!';
+                    buttonElement.classList.add('copied');
+                }
+            }
+        } catch (err) {
+            console.error("Error al copiar:", err);
+        }
+        return success;
+    }
+
     // Función para cargar datos guardados
     function cargarDatosGuardados() {
         const datosGuardados = localStorage.getItem('empleadosPorMes');
@@ -137,7 +181,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Banner de felicitación (similar al logo)
         const bannerHTML = `
             <div style="margin: 20px 0; text-align: center;">
-                <style="margin:0; padding:0; line-height:1px;"><img src="https://raw.githubusercontent.com/centricasolucionesdiseno-ux/Generador-de-Correos-de-Cumpleanno/main/img/banner/tarjeta_Cumple.png" alt="tarjetaCumple">
+                <img src="https://raw.githubusercontent.com/centricasolucionesdiseno-ux/Generador-de-Correos-de-Cumpleannos/main/img/banner/tarjeta_cumple.png" alt="Banner de Cumpleaños" style="max-width: 100%; height: auto;">
             </div>
         `;
         
@@ -164,11 +208,16 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
         
-        // Mostrar en el contenedor (sin contenedor extra)
+        // Mostrar en el contenedor
         correoContainer.innerHTML = cuerpoCorreo;
         
         // Mostrar el wrapper
         resultadoWrapper.style.display = 'block';
+        
+        // Habilitar el botón de copiar
+        if (copyBtn) {
+            copyBtn.disabled = false;
+        }
         
         // Scroll suave hacia el resultado
         setTimeout(() => {
@@ -176,58 +225,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 100);
         
         mostrarMensaje(`✅ Correo generado para ${nombreMes} con ${empleados.length} cumpleañero${empleados.length !== 1 ? 's' : ''}`, 'exito');
-    }
-
-    // Función para copiar al portapapeles (copia el HTML limpio)
-    function copiarCorreo() {
-        if (!correoContainer || !correoContainer.innerHTML) {
-            mostrarMensaje('❌ No hay correo para copiar', 'error');
-            return;
-        }
-        
-        try {
-            // Obtener el HTML del correo
-            const correoHTML = correoContainer.innerHTML;
-            
-            // Crear un elemento temporal para copiar
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = correoHTML;
-            
-            // Seleccionar el contenido
-            const range = document.createRange();
-            range.selectNodeContents(tempDiv);
-            const selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
-            
-            // Intentar copiar
-            let success = false;
-            try {
-                success = document.execCommand('copy');
-            } catch (err) {
-                console.error('Error al copiar:', err);
-            }
-            
-            selection.removeAllRanges();
-            
-            if (success) {
-                mostrarMensaje('✅ Correo copiado al portapapeles', 'exito');
-                if (copyBtn) {
-                    const originalText = copyBtn.textContent;
-                    copyBtn.textContent = '¡Copiado!';
-                    copyBtn.classList.add('copied');
-                    setTimeout(() => {
-                        copyBtn.textContent = originalText;
-                        copyBtn.classList.remove('copied');
-                    }, 3000);
-                }
-            } else {
-                mostrarMensaje('❌ Error al copiar. Selecciona manualmente el texto.', 'error');
-            }
-        } catch (error) {
-            console.error('Error en copiarCorreo:', error);
-            mostrarMensaje('❌ Error al copiar el correo', 'error');
-        }
     }
 
     // Event Listeners
@@ -251,20 +248,36 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    if (copyBtn) {
-        copyBtn.addEventListener('click', copiarCorreo);
+    // Lógica para el botón de Copiar
+    if (copyBtn && correoContainer) {
+        copyBtn.addEventListener('click', function() {
+            if (copyBtn.disabled) return;
+            copyEmail(copyBtn);
+            setTimeout(() => {
+                copyBtn.textContent = 'Copiar Correo';
+                copyBtn.classList.remove('copied');
+            }, 5000);
+        });
     }
     
-    // Al cambiar el mes, limpiar el resultado anterior
+    // Al cambiar el mes, ocultar resultado y deshabilitar botón de copiar
     if (mesSelect) {
         mesSelect.addEventListener('change', function() {
             if (resultadoWrapper) {
                 resultadoWrapper.style.display = 'none';
             }
+            if (copyBtn) {
+                copyBtn.disabled = true;
+            }
             if (generadoSpan) {
                 generadoSpan.textContent = '';
             }
         });
+    }
+    
+    // Deshabilitar botón de copiar al inicio
+    if (copyBtn) {
+        copyBtn.disabled = true;
     }
     
     // Cargar datos guardados al iniciar
