@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Elementos del DOM
-    const dividirBtn = document.getElementById('dividir-btn');
+    const generarBtn = document.getElementById('generar-btn');  // Cambiado a generar-btn
     const excelFile = document.getElementById('excelFile');
     const limpiarBtn = document.getElementById('limpiar-btn');
     const tablasWrapper = document.getElementById('tablas-meses-wrapper');
@@ -230,10 +230,13 @@ document.addEventListener('DOMContentLoaded', function() {
             tablasContainer.innerHTML = '<div style="padding: 20px; background: #f8f9fa; border-radius: 8px; text-align: center;">📭 No hay datos de cumpleaños cargados. Por favor, carga un archivo Excel válido.</div>';
         }
         
-        // Mostrar el wrapper
+        // Mostrar el wrapper con las tablas
         if (tablasWrapper) {
             tablasWrapper.style.display = 'block';
-            tablasWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // Scroll suave hacia las tablas
+            setTimeout(() => {
+                tablasWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
         }
     }
 
@@ -265,7 +268,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     mostrarTablas();
                     const totalEmpleados = Object.values(empleadosPorMes).reduce((total, mes) => total + mes.length, 0);
                     if (totalEmpleados > 0) {
-                        mostrarMensaje(`📊 Datos cargados: ${totalEmpleados} empleados registrados`, 'info');
+                        mostrarMensaje(`📊 Datos cargados automáticamente: ${totalEmpleados} empleados registrados`, 'info');
                     }
                 }
             } catch (error) {
@@ -323,9 +326,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 const empleadosValidos = procesarEmpleados(jsonData);
                 
                 if (empleadosValidos > 0) {
-                    mostrarTablas();
+                    mostrarTablas();  // Aquí se muestran las tablas después de procesar
                 } else {
                     mostrarMensaje('❌ No se encontraron datos válidos en el archivo', 'error');
+                    // Ocultar tablas si no hay datos válidos
+                    if (tablasWrapper) {
+                        tablasWrapper.style.display = 'none';
+                    }
                 }
                 
             } catch (error) {
@@ -342,8 +349,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Event Listeners
-    if (dividirBtn) {
-        dividirBtn.addEventListener('click', function() {
+    if (generarBtn) {
+        generarBtn.addEventListener('click', function() {
             if (excelFile && excelFile.files.length > 0) {
                 procesarArchivoExcel(excelFile.files[0]);
             } else {
