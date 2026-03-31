@@ -4,80 +4,42 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="style.css">
-    <title>Generador de firmas - Outlook Móvil</title>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <title>Generador de Correos de Cumpleaños - Cargar Base de datos</title>
 </head>
 <body>
 <div class="container">
     <div class="noselect">
         <a href="index.html" class="back-button">&larr; Volver a la selección</a>
-        <h2>Versión para Outlook Móvil</h2>
-        <p>1. Rellena todos los campos obligatorios (*) y haz clic en "Generar firma".</p>
-        <p>2. Usa el botón de abajo. En iPhone intentará copiar; en Android seleccionará el texto para que lo copies tú.</p>
+        <h2>Cargar Base de datos de Cumpleaños</h2>
+        <p>1. Selecciona un archivo Excel con el formato (Nombre del Empleado | Fecha de Cumpleaños).</p>
+        <p>2. Haz clic en "Dividir por Meses" para organizar los empleados según su mes de cumpleaños.</p>
+        <p>3. Los datos se guardarán automáticamente para usarlos en el generador de correos.</p>
 
         <div class="form-container">
             <div class="form-top-row">
-                <div class="form-group">
-                    <label for="nombre">Nombre y apellidos *</label>
-                    <input type="text" id="nombre" placeholder="Nombre Apellido" required>
-                </div>
-                <div class="form-group">
-                    <label for="cargo">Cargo *</label>
-                    <input type="text" id="cargo" placeholder="Cargo de empleado" required>
-                </div>
-                <div class="form-group">
-                    <label for="tef">Móvil</label>
-                    <input type="text" id="tef" placeholder="300 123 4567" maxlength="10">
-                </div>
-                <div class="form-group">
-                    <label for="dependencia">Dependencia *</label>
-                    <select id="dependencia" required>
-                        <option value="" disabled selected>-- Elige una dependencia --</option>
-                        <option value="Desarrollo e Innovacion">Desarrollo e Innovacion</option>
-                        <option value="Producto y Diseño">Producto y Diseño</option>
-                        <option value="Alianzas y Nuevos Negocios">Alianzas y Nuevos Negocios</option>
-                        <option value="Operaciones y Soporte">Operaciones y Soporte</option>
-                        <option value="Administracion y Finanzas">Administracion y Finanzas</option>
-                    </select>
+                <div class="form-group full-width">
+                    <label for="excelFile">Archivo Excel *</label>
+                    <input type="file" id="excelFile" accept=".xlsx, .xls, .csv">
+                    <small style="color: #666; display: block; margin-top: 5px;">Formato requerido: Columnas "Nombre del Empleado" y "Fecha de Cumpleaños"</small>
                 </div>
             </div>
             <div class="generate-button-container">
-                <button id="generar-btn">Generar firma</button><span id="generado"></span>
+                <button id="generar-btn">Dividir por Meses</button>
+                <span id="generado"></span>
             </div>
         </div>
     </div>
 
-    <!-- Oculto por defecto, se muestra al generar -->
-    <div id="resultado-wrapper" style="display: none;">
+    <!-- Contenedor para mostrar las tablas por mes -->
+    <div id="tablas-meses-wrapper" style="display: none;">
         <div class="copy-button-wrapper">
-            <button id="mobile-action-btn" class="action-button">Copiar / Seleccionar</button>
+            <button id="limpiar-btn" class="action-button" style="background-color: #dc3545;">Limpiar Datos</button>
         </div>
-
-        <div id="firma-container">
-            <p>
-                <span style="font-family:Arial,Helvetica,sans-serif;color:#163A73;"><b id="nombre-empleado"></b></span>
-                <br>
-                <span style="font-family:Arial,Helvetica,sans-serif;color:#0E58A9;"><b id="cargo-empleado"></b></span><br>
-                <span style="font-family:Arial,Helvetica,sans-serif;color:#0E58A9;font-size:14px;">Dependencia </span>
-                <span style="font-family:Arial,Helvetica,sans-serif;color:#606060;font-size:14px;" id="dependencia-empleado"></span> <br>
-                <span id="mobile-field-wrapper" style="display: none;">
-                    <span style="font-family:Arial,Helvetica,sans-serif;color:#0E58A9;font-size:14px;">Movil </span>
-                    <span style="font-family:Arial,Helvetica,sans-serif;color:#606060;font-size:14px;">+57 </span>
-                    <span style="font-family:Arial,Helvetica,sans-serif;color:#606060;font-size:14px;" id="tef-empleado"></span>
-                </span>
-                <br><br>
-            </p>
-            <p><img src="https://raw.githubusercontent.com/centricasolucionesdiseno-ux/Firma-CentricaSoluciones/main/img/logo.png" alt="logo"></p>
-            <p id="direccion-container">
-                <span style="font-family:Arial,Helvetica,sans-serif;color:#163A73;font-size:14px;">Centrica Soluciones </span>
-                <span style="font-family:Arial,Helvetica,sans-serif;color:#0E58A9;font-size:14px;"> | Web </span>
-                <span style="font-family:Arial,Helvetica,sans-serif;font-size:14px;"> Disponible pronto</span>
-            </p>
-            <br>
-            Por favor cuide el medioambiente y no imprima este correo electrónico a no ser que sea necesario.
-        </div>
+        <div id="tablas-container"></div>
     </div>
 </div>
 
-<script src="script.js?v=2.0"></script>
+<script src="cargar-bd.js"></script>
 </body>
 </html>
