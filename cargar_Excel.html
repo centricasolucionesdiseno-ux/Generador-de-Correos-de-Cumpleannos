@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>Generador de firmas - Outlook Escritorio y Web</title>
+</head>
+<body>
+<div class="container">
+    <div class="noselect">
+        <a href="index.html" class="back-button">&larr; Volver a la selección</a>
+        <h2>Versión para Outlook Escritorio y Web</h2>
+        <p>1. Rellena todos los campos obligatorios (*) y haz clic en "Generar firma".</p>
+        <p>2. Usa el botón "Copiar Firma" (solo se activará tras generar) y pégala en la configuración de firmas de Outlook (tanto en escritorio como en web).</p>
+
+        <div class="form-container">
+            <div class="form-top-row">
+                <div class="form-group">
+                    <label for="nombre">Nombre y apellidos *</label>
+                    <input type="text" id="nombre" placeholder="Nombre Apellido" required>
+                </div>
+                <div class="form-group">
+                    <label for="cargo">Cargo *</label>
+                    <input type="text" id="cargo" placeholder="Cargo de empleado" required>
+                </div>
+                <div class="form-group">
+                    <label for="tef">Móvil</label>
+                    <input type="text" id="tef" placeholder="300 123 4567" maxlength="10">
+                </div>
+                <div class="form-group">
+                    <label for="dependencia">Dependencia *</label>
+                    <select id="dependencia" required>
+                        <option value="" disabled selected>-- Elige una dependencia --</option>
+                        <option value="Desarrollo e Innovacion">Desarrollo e Innovacion</option>
+                        <option value="Producto y Diseño">Producto y Diseño</option>
+                        <option value="Alianzas y Nuevos Negocios">Alianzas y Nuevos Negocios</option>
+                        <option value="Operaciones y Soporte">Operaciones y Soporte</option>
+                        <option value="Administracion y Finanzas">Administracion y Finanzas</option>
+                    </select>
+                </div>
+            </div>
+            <div class="generate-button-container">
+                <button id="generar-btn">Generar firma</button><span id="generado"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Oculto por defecto, se muestra al generar -->
+    <div id="resultado-wrapper" style="display: none;">
+        <div class="copy-button-wrapper">
+            <button id="copy-btn" class="action-button">Copiar Firma</button>
+        </div>
+
+        <div id="firma-container">
+            <p>
+                <span style="font-family:Arial,Helvetica,sans-serif;color:#163A73;"><b id="nombre-empleado"></b></span>
+                <br>
+                <span style="font-family:Arial,Helvetica,sans-serif;color:#0E58A9;"><b id="cargo-empleado"></b></span><br>
+                <span style="font-family:Arial,Helvetica,sans-serif;color:#0E58A9;font-size:14px;">Dependencia </span>
+                <span style="font-family:Arial,Helvetica,sans-serif;color:#606060;font-size:14px;" id="dependencia-empleado"></span> <br>
+                <span id="mobile-field-wrapper" style="display: none;">
+                    <span style="font-family:Arial,Helvetica,sans-serif;color:#0E58A9;font-size:14px;">Movil </span>
+                    <span style="font-family:Arial,Helvetica,sans-serif;color:#606060;font-size:14px;">+57 </span>
+                    <span style="font-family:Arial,Helvetica,sans-serif;color:#606060;font-size:14px;" id="tef-empleado"></span>
+                </span>
+                <br><br>
+            </p>
+            <p id="direccion-container">
+                <span style="font-family:Arial,Helvetica,sans-serif;color:#163A73;font-size:14px;">Centrica Soluciones </span>
+                
+                <span style="font-family:Arial,Helvetica,sans-serif;color:#0E58A9;font-size:14px;"> | Web </span>
+                <span style="font-family:Arial,Helvetica,sans-serif;font-size:14px;"> Disponible pronto</span>
+            </p>
+            <div style="height: 3px; line-height: 3px; font-size: 3px;">&nbsp;</div>
+            <p style="margin:0; padding:0; line-height:1px;"><img src="https://raw.githubusercontent.com/centricasolucionesdiseno-ux/Firma-CentricaSoluciones/main/img/banner/banner_actual.png" alt="banner"></p>
+            <div style="height: 3px; line-height: 3px; font-size: 3px;">&nbsp;</div>
+            <br>
+            Por favor cuide el medioambiente y no imprima este correo electrónico a no ser que sea necesario.
+        </div>
+    </div>
+</div>
+<script src="datos_banners.js?v=2.0"></script>
+<script src="script.js?v=2.0"></script>
+</body>
+</html>
