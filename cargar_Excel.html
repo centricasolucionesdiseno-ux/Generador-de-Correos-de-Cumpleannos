@@ -20,13 +20,13 @@
             <div class="form-top-row">
                 <div class="form-group full-width">
                     <label for="excelFile">Archivo Excel *</label>
-                    <input type="file" id="excelFile" accept=".xlsx, .xls, .csv" required>
+                    <input type="file" id="excelFile" accept=".xlsx, .xls, .csv">
                     <small style="color: #666; display: block; margin-top: 5px;">Formato requerido: Columnas "Nombre del Empleado" y "Fecha de Cumpleaños"</small>
                 </div>
             </div>
             <div class="generate-button-container">
                 <button id="dividir-btn">Dividir por Meses</button>
-                <span id="mensaje-estado"></span>
+                <span id="generado"></span>
             </div>
         </div>
     </div>
@@ -39,5 +39,7 @@
         <div id="tablas-container"></div>
     </div>
 </div>
+
+<script src="cargar-bd.js"></script>
 </body>
 </html>
