@@ -39,9 +39,36 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Función para convertir número serial de Excel a fecha
+    function excelDateToJSDate(serial) {
+        // Excel usa 1/1/1900 como fecha base
+        // Pero tiene un bug: considera 1900 como año bisiesto
+        const utc_days = Math.floor(serial - 25569);
+        const utc_value = utc_days * 86400;
+        const date_info = new Date(utc_value * 1000);
+        
+        // Ajustar por el bug de Excel (1900 no fue bisiesto)
+        if (serial < 61) {
+            return new Date(date_info.getTime());
+        }
+        return new Date(date_info.getTime());
+    }
+
     // Función para parsear fechas en diferentes formatos
     function parsearFecha(fechaStr) {
         if (!fechaStr) return null;
+        
+        // Si es un número (serial de Excel)
+        if (typeof fechaStr === 'number') {
+            // Los números entre 1 y 50000 suelen ser fechas de Excel
+            if (fechaStr > 1 && fechaStr < 50000) {
+                const fechaExcel = excelDateToJSDate(fechaStr);
+                if (!isNaN(fechaExcel.getTime())) {
+                    return fechaExcel;
+                }
+            }
+            return null;
+        }
         
         // Si ya es un objeto Date
         if (fechaStr instanceof Date) {
@@ -94,6 +121,15 @@ document.addEventListener('DOMContentLoaded', function() {
     function formatearFechaParaMostrar(fecha) {
         if (!fecha) return 'No especificada';
         
+        // Si es un número (serial de Excel)
+        if (typeof fecha === 'number') {
+            const fechaExcel = excelDateToJSDate(fecha);
+            if (!isNaN(fechaExcel.getTime())) {
+                return `${fechaExcel.getDate()}/${fechaExcel.getMonth() + 1}/${fechaExcel.getFullYear()}`;
+            }
+            return String(fecha);
+        }
+        
         if (fecha instanceof Date) {
             return `${fecha.getDate()}/${fecha.getMonth() + 1}/${fecha.getFullYear()}`;
         }
@@ -145,6 +181,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
                     empleadosValidos++;
                 } else {
+                    console.warn('Fecha inválida:', fechaCumple, 'Tipo:', typeof fechaCumple);
                     empleadosInvalidos++;
                 }
             } else {
@@ -315,7 +352,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 const data = new Uint8Array(e.target.result);
                 const workbook = XLSX.read(data, { type: 'array' });
                 const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+                
+                // Forzar a que lea todo como texto para preservar los datos
+                const jsonData = XLSX.utils.sheet_to_json(firstSheet, { 
+                    raw: false,  // Esto fuerza a convertir todo a string
+                    defval: ""   // Valor por defecto para celdas vacías
+                });
                 
                 if (jsonData.length === 0) {
                     mostrarMensaje('❌ El archivo está vacío', 'error');
